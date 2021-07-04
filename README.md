@@ -1,2 +1,2 @@
 # Web-App-Cloud
-This project is to showcase the deployement of a simple web-app deployed using containers with Google App Run, allowing for Continuos Delivery (CD) and automated scalability of the application.
+This project showcases the code for the deployement of a simple web-app using containers with Google App Run, allowing for Continuos Delivery (CD) and automated scalability of the application.
