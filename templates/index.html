@@ -5,5 +5,7 @@
   <input type=file name=image>
   <input type=submit value=Predict>
   <br>
-  <img id="picture" src="data:image/jpeg;base64,{{ img_data }}">
+  {% if img_data %}
+    <img id="picture" src="data:image/jpeg;base64,{{ img_data }}">  
+  {%endif%}
 </form>

@@ -80,7 +80,7 @@ def upload_predict():
             return render_template("index.html", 
                                    img_data=encoded_data.decode('utf-8'))
 
-    return render_template("index.html", img_data=0)
+    return render_template("index.html", img_data=None)
 
 if __name__ == "__main__":
 
