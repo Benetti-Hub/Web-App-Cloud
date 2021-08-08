@@ -16,9 +16,8 @@ from PIL import Image
 app = Flask(__name__)
 model = hub.load("model/")
 
-def draw_boxes(image, borders, label :str, 
-               score :float, h=0.06, fontScale=0.0007):
-
+def draw_boxes(image, borders, label, 
+               score, h=0.06, fontScale=0.0007):
     '''
     Function to draw the boxes with openCV on a given
     image:
