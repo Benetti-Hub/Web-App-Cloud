@@ -6,6 +6,7 @@ from flask import request
 
 import base64
 import io
+import os
 
 import numpy as np
 import tensorflow_hub as hub
@@ -130,5 +131,5 @@ def upload_predict():
 
 if __name__ == "__main__":
 
-    app.run(port=12000, debug=True)
+    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
 

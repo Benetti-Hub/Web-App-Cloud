@@ -1,21 +1,25 @@
-FROM ubuntu
+FROM python:3.9-slim
 
-RUN apt-get update && apt-get install -y python3 python3-pip sudo
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
 
-RUN useradd -m benetti
-
-RUN chown -R benetti:benetti /home/benetti/
-
-COPY --chown==benetti . /home/benetti/app
-
-USER benetti
+COPY . /app
+WORKDIR /app
+ENV DEBIAN_FRONTEND noninteractive
+RUN apt-get update -y
+RUN apt install libgl1-mesa-glx -y
+RUN apt-get install 'ffmpeg'\
+    'libsm6'\
+    'libxext6'  -y
 
 RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+# Install production dependencies.
+RUN pip3 install gunicorn
 
-RUN cd /home/benetti/app && pip3 install -r requirements.txt
-
-WORKDIR /home/benetti/app
-
-EXPOSE 8080
-
-ENTRYPOINT python3 app.py
+# Run the web service on container startup. Here we use the gunicorn
+# webserver, with one worker process and 8 threads.
+# For environments with multiple CPU cores, increase the number of workers
+# to be equal to the cores available.
+# Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
