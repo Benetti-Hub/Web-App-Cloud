@@ -13,6 +13,7 @@ RUN apt-get install 'ffmpeg'\
     'libxext6'  -y
 
 RUN pip3 install --upgrade pip
+# Install required python packages
 RUN pip3 install -r requirements.txt
 # Install production dependencies.
 RUN pip3 install gunicorn
