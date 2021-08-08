@@ -1,3 +1,4 @@
+# COCO 2017 dictionary to associate classes to real objects
 di = {1: {'id': 1, 'name': 'person'},
  2: {'id': 2, 'name': 'bicycle'},
  3: {'id': 3, 'name': 'car'},
