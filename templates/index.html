@@ -43,21 +43,7 @@
         {% if img_data %}
             <div id="container">
                 <img src="data:image/jpeg;base64,{{ img_data }}" alt="">
-            </div>        
-            <!--JavaScript to force the image to fit the box-->
-            <script type="text/javascript">
-                (function() {
-                
-                var img = document.getElementById('container').firstChild;
-                img.onload = function() {
-                    if(img.height > img.width) {
-                        img.height = '100%';
-                        img.width = 'auto';
-                    }
-                };
-                }());
-            </script>
-                
+            </div>                        
         {%endif%}   
     </form>
     
