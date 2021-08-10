@@ -1,7 +1,7 @@
 from utils import di
 
 from flask import Flask
-from flask import render_template
+from flask import render_template, redirect, url_for
 from flask import request
 
 import base64
@@ -16,6 +16,7 @@ from PIL import Image
 
 app = Flask(__name__)
 model = hub.load("model/")
+data = io.BytesIO()
 
 def draw_boxes(image, borders, label, 
                score, h=0.06, fontScale=0.0007):
@@ -68,7 +69,7 @@ def draw_boxes(image, borders, label,
 
     return image
     
-def predict_objects(image_file : Image.Image, threshold=0.6):
+def draw_objects(image_file : Image.Image, threshold=0.6):
     '''
     Function to classify the object in a given image.
     This function uses a neural network trained on the
@@ -108,28 +109,37 @@ def predict_objects(image_file : Image.Image, threshold=0.6):
     return image
 
 
-@app.route("/", methods=["GET", "POST"])
-def upload_predict():
-    '''
-    Homepage of the application. This function
-    will render the HTML template in the templates
-    folder and will allow the user to upload and generate
-    predictions on a given image
-    '''
+@app.route("/predict", methods=["GET", "POST"])
+def predict():
+
     if request.method == "POST":
-        image_file = request.files["image"]
+        return redirect(url_for("index"))
+
+    encoded_data = base64.b64encode(data.getvalue())
+    return render_template("predictions.html",
+            img_data=encoded_data.decode('utf-8'))
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        image_file = request.files["fileUpload"]
         #If an image is uploaded:
         if image_file:
-            data = io.BytesIO() #the image is never stored in a physical disk
-            image = predict_objects(Image.open(image_file))            
-            Image.fromarray(image).save(data, "JPEG")
-            encoded_data = base64.b64encode(data.getvalue())
-            return render_template("index.html", 
-                                   img_data=encoded_data.decode('utf-8'))
+            #We convert in RGB since
+            image = Image.open(image_file).convert('RGB')
+            image = draw_objects(image)
+            
+            data.truncate(0)
+            data.seek(0)
 
-    return render_template("index.html", img_data=None)
+            Image.fromarray(image).save(data, "JPEG") #Save image in memory
+
+            return redirect(url_for('predict'))   
+        
+    return render_template("index.html")
 
 if __name__ == "__main__":
 
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(debug=True, host="0.0.0.0", 
+            port=int(os.environ.get("PORT", 8080)))
 
