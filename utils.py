@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow_hub as hub
 import tensorflow as tf
 import cv2
-from PIL import Image
+from PIL import Image, ImageOps
 
 #TensorflowHub Model
 model = hub.load("model/")
@@ -111,36 +111,8 @@ def fix_orientation(img):
     Ouptut:
         image : the rotated image
     '''
+    return ImageOps.exif_transpose(img)
 
-    if hasattr(img, '_getexif'):
-        exifdata = img._getexif()
-        try:
-            orientation = exifdata.get(274)
-        except:
-            # There was no EXIF Orientation Data
-            orientation = 1
-    else:
-        orientation = 1
-
-    #This is sadly the only method
-    if orientation == 1:    # Horizontal (normal)
-        pass
-    elif orientation == 2:  # Mirrored horizontal
-        img = img.transpose(Image.FLIP_LEFT_RIGHT)
-    elif orientation == 3:  # Rotated 180
-        img = img.rotate(180)
-    elif orientation == 4:  # Mirrored vertical
-        img = img.rotate(180).transpose(Image.FLIP_LEFT_RIGHT)
-    elif orientation == 5:  # Mirrored horizontal then rotated 90 CCW
-        img = img.rotate(-90).transpose(Image.FLIP_LEFT_RIGHT)
-    elif orientation == 6:  # Rotated 90 CCW
-        img = img.rotate(-90)
-    elif orientation == 7:  # Mirrored horizontal then rotated 90 CW
-        img = img.rotate(90).transpose(Image.FLIP_LEFT_RIGHT)
-    elif orientation == 8:  # Rotated 90 CW
-        img = img.rotate(90)
-
-    return img
 
 
 # COCO 2017 dictionary to associate classes to real objects
