@@ -1,3 +1,4 @@
+from werkzeug.utils import send_file
 from utils import draw_objects
 
 from flask import Flask
@@ -10,52 +11,33 @@ import io
 import os
 
 app = Flask(__name__)
-data = io.BytesIO()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-
     '''
     Homepage of the app, offer the
     possibility to upload and predict an
     image
     '''
-    data.truncate(0) 
-    data.seek(0)
-
     if request.method == "POST":
-        image_file = request.files["fileUpload"]
-        #If an image is uploaded:
-        if image_file:
+        if "fileUpload" in request.files.keys():
+            image_file = request.files["fileUpload"]
+            #If an image is uploaded:
             #We convert in RGB (for images with a colormap)
             image = Image.open(image_file).convert('RGB')
             image = draw_objects(image)
             #Add the image to the stream
+            data = io.BytesIO()
             Image.fromarray(image).save(data, "JPEG") #Save image in memory
+            encoded_data = base64.b64encode(data.getvalue())
 
-            return redirect(url_for('predict'))   
+            return render_template("predictions.html",
+                                    img_data=encoded_data.decode('utf-8')) 
         
     return render_template("index.html")
 
-@app.route("/predict", methods=["GET", "POST"])
-def predict():
-    '''
-    Prediction section of the app, offers a
-    button to go to the homepage and the outputs
-    from the neural network
-    '''
-    #Return to the homepage
-    if request.method == "POST":
-        return redirect(url_for("index"))
-
-    #Render the image
-    encoded_data = base64.b64encode(data.getvalue())
-    
-    return render_template("predictions.html",
-            img_data=encoded_data.decode('utf-8'))
-
 if __name__ == "__main__":
 
-    app.run(debug=False, host="0.0.0.0", 
+    app.run(debug=True, host="0.0.0.0", 
             port=int(os.environ.get("PORT", 8080)))
 
