@@ -24,8 +24,7 @@
 
 <!-- Upload  -->
 <form id="file-upload-form" class="uploader" method=post enctype=multipart/form-data>
-  <input id="file-upload" type="file" name="fileUpload" accept="image/*" />
-
+  <input id="file-upload" type="file" name="fileUpload" accept="image/*" required/>
   <label for="file-upload" id="file-drag">
     <img id="file-image" src="#" alt="Preview" class="hidden">
     <div id="start">
@@ -47,21 +46,17 @@
   <div id="spinningdot" class="dot-spin" style="visibility: hidden;"></div>
 </form>
 
-
 <script>
 // File Upload
 // 
 function ekUpload(){
   function Init() {
 
-    console.log("Upload Initialised");
-
     var fileSelect    = document.getElementById('file-upload'),
         fileDrag      = document.getElementById('file-drag'),
         submitButton  = document.getElementById('submit-button');
-
+    
     fileSelect.addEventListener('change', fileSelectHandler, false);
-
     // Is XHR2 available?
     var xhr = new XMLHttpRequest();
     if (xhr.upload) {
@@ -109,8 +104,6 @@ function ekUpload(){
       '<strong>' + encodeURI(file.name) + '</strong>'
     );
     
-    // var fileType = file.type;
-    // console.log(fileType);
     var imageName = file.name;
 
     var isGood = (/\.(?=gif|jpg|png|jpeg)/gi).test(imageName);
@@ -156,10 +149,16 @@ ekUpload();
 
 // Output
 function plaseWait() {
-  // Response
-  var m = document.getElementById('messages');
-  m.innerHTML = "Uploading file, please wait";
-  document.getElementById('spinningdot').style.visibility = "visible";
+  if(document.getElementById("file-upload").value.length == 0)
+  {
+  } else {
+    // Response
+    var m = document.getElementById('messages');
+    m.innerHTML = "Uploading file, please wait";
+    document.getElementById('spinningdot').style.visibility = "visible";
+  }
+
+  
 }
 
 

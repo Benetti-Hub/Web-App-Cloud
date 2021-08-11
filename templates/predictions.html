@@ -10,12 +10,15 @@
   <link rel="icon" type="image/png" sizes="16x16" href="../static/images/favicon-16x16.png">
   <link rel="manifest" href="../static/images/site.webmanifest">
 </head>
-
-<div>
-  <img src="data:image/jpeg;base64,{{ img_data }}" alt="">
-  <form method="post" class="uploader">
-    <button class="btn btn-next" id="mybutton" type="submit">
-      <i class="fa fa-paper-plane"></i> Try another!
-    </button> 
-  </form>
-</div>
+<body>
+  <div>
+    <img src="data:image/jpeg;base64,{{ img_data }}" alt="">
+    <p class="lead"><b>If no green box is present, the network failed to identify the objects in the picture</b></p>
+    <form method="post" class="uploader">
+      <button class="btn btn-next" id="mybutton" type="submit">
+        <i class="fa fa-paper-plane"></i> Try another!
+      </button> 
+    </form>
+  </div>
+ 
+</body>
