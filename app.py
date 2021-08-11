@@ -50,9 +50,7 @@ def predict():
 
     #Render the image
     encoded_data = base64.b64encode(data.getvalue())
-    #Reset the stream object
-    data.truncate(0)
-    data.seek(0)
+    
     return render_template("predictions.html",
             img_data=encoded_data.decode('utf-8'))
 
