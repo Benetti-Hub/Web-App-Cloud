@@ -20,8 +20,11 @@ h2 {
   margin-bottom: 0; }
 
 p {
+  margin: auto;
   font-family: "Roboto", sans-serif;
   font-size: 18px;
+  max-width: 512px;
+  width: 50%;
   color: #5f6982; }
 
 .uploader {

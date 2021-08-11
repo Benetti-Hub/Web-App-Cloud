@@ -49,6 +49,18 @@
 <script>
 // File Upload
 // 
+
+//Utility function to reset the form if needed
+function resetForm(){
+  document.getElementById('file-image').classList.add("hidden");
+  document.getElementById('notimage').classList.remove("hidden");
+  document.getElementById('start').classList.remove("hidden");
+  document.getElementById('response').classList.add("hidden");
+  document.getElementById('mybutton').style.visibility = "hidden";
+  document.getElementById('spinningdot').style.visibility = "hidden";
+  document.getElementById("file-upload-form").reset();
+}
+
 function ekUpload(){
   function Init() {
 
@@ -117,12 +129,7 @@ function ekUpload(){
       document.getElementById('file-image').src = URL.createObjectURL(file);
     }
     else {
-      document.getElementById('file-image').classList.add("hidden");
-      document.getElementById('notimage').classList.remove("hidden");
-      document.getElementById('start').classList.remove("hidden");
-      document.getElementById('response').classList.add("hidden");
-      document.getElementById('mybutton').style.visibility = "hidden";
-      document.getElementById("file-upload-form").reset();
+      resetForm();
     }
   }
   function uploadFile(file) {
@@ -146,6 +153,13 @@ function ekUpload(){
   }
 }
 ekUpload();
+
+var fileSelectEle = document.getElementById('file-upload');
+fileSelectEle.onchange = function () {
+  if(fileSelectEle.value.length == 0){
+    resetForm()
+  }
+}
 
 // Output
 function plaseWait() {
