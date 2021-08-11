@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow_hub as hub
 import tensorflow as tf
 import cv2
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ExifTags
 
 #TensorflowHub Model
 model = hub.load("model/")
@@ -73,8 +73,8 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
     Output:
         image : the image with the identified objects
     '''
-    image_file = fix_orientation(image_file)
-
+    image_file = ImageOps.exif_transpose(image_file)
+    rotate_img(image_file)
     basewidth = 1080
     wpercent = (basewidth/float(image_file.size[0]))
     hsize = int((float(image_file.size[1])*float(wpercent)))
@@ -99,20 +99,17 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
 
     return image
 
-def fix_orientation(img):
 
-    '''
-    Utility function to fix the orientation 
-    of a given image if possible
+def rotate_img(img):
 
-    Input:
-        image : the image to rotate
-    
-    Ouptut:
-        image : the rotated image
-    '''
-    return ImageOps.exif_transpose(img)
-
+    exif_orientation_tag = 274
+    # Check for EXIF data (only present on some files)
+    if hasattr(img, "_getexif") and isinstance(img._getexif(), dict) and exif_orientation_tag in img._getexif():
+        exif_data = img._getexif()
+        orientation = exif_data[exif_orientation_tag]
+        print(orientation)
+    else:
+        print("No EXIF Found")
 
 
 # COCO 2017 dictionary to associate classes to real objects
