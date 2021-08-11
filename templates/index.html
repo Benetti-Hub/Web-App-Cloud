@@ -38,10 +38,15 @@
       <div id="messages"></div>
     </div>
   </label>
-  <button class="btn btn-next" style="visibility:hidden" id="mybutton" type="submit">
-    <i class="fa fa-paper-plane"></i> Submit
-  </button>  
+  <div>
+    <button class="btn btn-next" style="visibility:hidden" id="mybutton" onclick="plaseWait()" type="submit">
+      <i class="fa fa-paper-plane"></i> Submit 
+    </button>
+    <br>
+  </div>
+  <div id="spinningdot" class="dot-spin" style="visibility: hidden;"></div>
 </form>
+
 
 <script>
 // File Upload
@@ -148,5 +153,15 @@ function ekUpload(){
   }
 }
 ekUpload();
+
+// Output
+function plaseWait() {
+  // Response
+  var m = document.getElementById('messages');
+  m.innerHTML = "Uploading file, please wait";
+  document.getElementById('spinningdot').style.visibility = "visible";
+}
+
+
 </script>
 </body>
