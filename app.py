@@ -20,6 +20,9 @@ def index():
     possibility to upload and predict an
     image
     '''
+    data.truncate(0) 
+    data.seek(0)
+
     if request.method == "POST":
         image_file = request.files["fileUpload"]
         #If an image is uploaded:
@@ -27,9 +30,6 @@ def index():
             #We convert in RGB (for images with a colormap)
             image = Image.open(image_file).convert('RGB')
             image = draw_objects(image)
-            #Reset the stream object
-            data.truncate(0) 
-            data.seek(0)
             #Add the image to the stream
             Image.fromarray(image).save(data, "JPEG") #Save image in memory
 
