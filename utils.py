@@ -74,7 +74,7 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
         image : the image with the identified objects
     '''
     image_file = ImageOps.exif_transpose(image_file)
-    basewidth = 1080
+    basewidth = 512
     wpercent = (basewidth/float(image_file.size[0]))
     hsize = int((float(image_file.size[1])*float(wpercent)))
     image_file = image_file.resize((basewidth,hsize), Image.ANTIALIAS)

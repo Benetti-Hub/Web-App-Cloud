@@ -14,11 +14,13 @@
 <body>
   <h2>Object Detection App</h2>
  
-<p class="lead">For <b>Continuos Delivery
-  <a href="https://github.com/Benetti-Hub/Web-App-Cloud" target="_blank" rel="noopener noreferrer"> 
+<p class="lead">With <b>Continuos Delivery
+  <a href="https://github.com/Benetti-Hub/Web-App-Cloud/tree/CI-CD" target="_blank" rel="noopener noreferrer"> 
     <i class="fa fa-github w3-hover-opacity"></i>
   </a>
 </b></p>
+
+<p class="lead"> This app can detect cats, dogs, plants and people in a photo </p>
 
 <!-- Upload  -->
 <form id="file-upload-form" class="uploader" method=post enctype=multipart/form-data>
@@ -34,9 +36,6 @@
     </div>
     <div id="response" class="hidden">
       <div id="messages"></div>
-      <progress class="progress" id="file-progress" value="0">
-        <span>0</span>%
-      </progress>
     </div>
   </label>
   <button class="btn btn-next" style="visibility:hidden" id="mybutton" type="submit">
@@ -87,7 +86,7 @@ function ekUpload(){
     // Process all File objects
     for (var i = 0, f; f = files[i]; i++) {
       parseFile(f);
-      //uploadFile(f);
+      uploadFile(f);
     }
   }
 
@@ -128,58 +127,19 @@ function ekUpload(){
       document.getElementById("file-upload-form").reset();
     }
   }
-
-  function setProgressMaxValue(e) {
-    var pBar = document.getElementById('file-progress');
-
-    if (e.lengthComputable) {
-      pBar.max = e.total;
-    }
-  }
-
-  function updateFileProgress(e) {
-    var pBar = document.getElementById('file-progress');
-
-    if (e.lengthComputable) {
-      pBar.value = e.loaded;
-    }
-  }
-
   function uploadFile(file) {
-
     var xhr = new XMLHttpRequest(),
       fileInput = document.getElementById('class-roster-file'),
       pBar = document.getElementById('file-progress'),
       fileSizeLimit = 1024; // In MB
     if (xhr.upload) {
       // Check if file is less than x MB
-      if (file.size <= fileSizeLimit * 1024 * 1024) {
-        // Progress bar
-        pBar.style.display = 'inline';
-        xhr.upload.addEventListener('loadstart', setProgressMaxValue, false);
-        xhr.upload.addEventListener('progress', updateFileProgress, false);
-
-        // File received / failed
-        xhr.onreadystatechange = function(e) {
-          if (xhr.readyState == 4) {
-            // Everything is good!
-
-            progress.className = (xhr.status == 200 ? "success" : "failure");
-            document.location.reload(true);
-          }
-        };
-        // Start upload
-        xhr.open('POST', document.getElementById('file-upload-form').action, true);
-        xhr.setRequestHeader('X-File-Name', file.name);
-        xhr.setRequestHeader('X-File-Size', file.size);
-        xhr.setRequestHeader('Content-Type', 'multipart/form-data');
-        xhr.send(file);
-      } else {
+      if (file.size > fileSizeLimit * 1024 * 1024) {
         output('Please upload a smaller file (< ' + fileSizeLimit + ' MB).');
+        document.getElementById('mybutton').style.visibility = "hidden"
       }
     }
   }
-
   // Check for the various File API support.
   if (window.File && window.FileList && window.FileReader) {
     Init();
@@ -187,10 +147,6 @@ function ekUpload(){
     document.getElementById('file-drag').style.display = 'none';
   }
 }
-function postImage(file){
-
-}
 ekUpload();
 </script>
-
 </body>
