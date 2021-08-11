@@ -13,6 +13,7 @@ RUN apt-get install 'ffmpeg'\
     'libxext6'  -y
 
 RUN pip3 install --upgrade pip
+# Install required python packages
 RUN pip3 install -r requirements.txt
 # Install production dependencies.
 RUN pip3 install gunicorn
@@ -22,4 +23,4 @@ RUN pip3 install gunicorn
 # For environments with multiple CPU cores, increase the number of workers
 # to be equal to the cores available.
 # Timeout is set to 0 to disable the timeouts of the workers to allow Cloud Run to handle instance scaling.
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
+CMD exec gunicorn --bind :$PORT --workers 2 --threads 8 --timeout 0 app:app
