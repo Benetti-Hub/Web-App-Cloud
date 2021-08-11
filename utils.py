@@ -74,7 +74,6 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
         image : the image with the identified objects
     '''
     image_file = ImageOps.exif_transpose(image_file)
-    rotate_img(image_file)
     basewidth = 1080
     wpercent = (basewidth/float(image_file.size[0]))
     hsize = int((float(image_file.size[1])*float(wpercent)))
@@ -98,19 +97,6 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
             image = draw_boxes(image, boxes, label, 100*score)
 
     return image
-
-
-def rotate_img(img):
-
-    exif_orientation_tag = 274
-    # Check for EXIF data (only present on some files)
-    if hasattr(img, "_getexif") and isinstance(img._getexif(), dict) and exif_orientation_tag in img._getexif():
-        exif_data = img._getexif()
-        orientation = exif_data[exif_orientation_tag]
-        print(orientation)
-    else:
-        print("No EXIF Found")
-
 
 # COCO 2017 dictionary to associate classes to real objects
 di = {1: {'id': 1, 'name': 'person'},
