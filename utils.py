@@ -1,14 +1,15 @@
+'''Utilities functions for the Web-App'''
 import numpy as np
 import tensorflow_hub as hub
 import tensorflow as tf
 import cv2
-from PIL import Image, ImageOps, ExifTags
+from PIL import Image, ImageOps
 
 #TensorflowHub Model
 model = hub.load("model/")
 
-def draw_boxes(image, borders, label, 
-               score, h=0.06, fontScale=0.0007):
+def draw_boxes(image, borders, label,
+               score):
     '''
     Function to draw the boxes with openCV on a given
     image:
@@ -26,35 +27,42 @@ def draw_boxes(image, borders, label,
     '''
     #Determine the optimal parameters for the image
     displacement = 3
-    if borders[0]-h < 0:
-        h *= -1
+    height = 0.06
+    #Draw inside the bounding box if needed
+    if borders[0]-height < 0:
+        height *= -1
         displacement = 2
 
+    #Determine the edges of the bounding boxes
     x_max = round(image.shape[1]*borders[3])
     x_min = round(image.shape[1]*borders[1])
     y_max = round(image.shape[0]*borders[2])
     y_min = round(image.shape[0]*borders[0])
-    
-    h = round(image.shape[0]*h)
-    
+
+    height = round(image.shape[0]*height)
     image = np.array(image)
-    # Add image boxes
+
+    # Add boxes
     image = cv2.rectangle(image, (x_min, y_min),
                          (x_max, y_max), (0, 255, 0), 2)
 
     # Add text and boxes
     text = f"{label} {score:.1f}"
-    fontFace = cv2.FONT_HERSHEY_SIMPLEX
-    fontScale = max(image.shape)*fontScale
+    font_face = cv2.FONT_HERSHEY_SIMPLEX
+    font_scale = 0.0007*max(image.shape)
     thickness = 1
-    labelSize = cv2.getTextSize(text, fontFace, fontScale, thickness)
 
-    image = cv2.rectangle(image, (x_min, y_min - h),
-                         (x_min + labelSize[0][0], y_min), (0,255,0), -1)
+    #Determine the length of the text
+    label_size = cv2.getTextSize(text, font_face, font_scale, thickness)
 
+    #Draw the text box
+    image = cv2.rectangle(image, (x_min, y_min - height),
+                         (x_min + label_size[0][0], y_min), (0,255,0), -1)
+
+    #Write the class and confidence in the box
     image = cv2.putText(image, text,
-                        (x_min, y_min - int(h/displacement)),
-                        fontFace, fontScale, (0,0,0), thickness)
+                        (x_min, y_min - int(height/displacement)),
+                        font_face, font_scale, (0,0,0), thickness)
 
     return image
 
@@ -63,7 +71,7 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
     '''
     Function to classify the object in a given image.
     This function uses a neural network trained on the
-    COCO dataset (https://cocodataset.org/#home) 
+    COCO dataset (https://cocodataset.org/#home)
 
     Input:
         image : the image to be classified
@@ -86,13 +94,13 @@ def draw_objects(image_file : Image.Image, threshold=0.6):
                  )
 
     detector_output = model(img_tensor)
-    
+
     for i in range(int(detector_output["num_detections"])):
 
         boxes = detector_output['detection_boxes'][0][i].numpy()
         score = detector_output['detection_scores'][0][i].numpy()
         label = di[detector_output['detection_classes'][0][i].numpy()]['name']
-        
+
         if score > threshold:
             image = draw_boxes(image, boxes, label, 100*score)
 

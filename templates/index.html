@@ -24,8 +24,7 @@
 
 <!-- Upload  -->
 <form id="file-upload-form" class="uploader" method=post enctype=multipart/form-data>
-  <input id="file-upload" type="file" name="fileUpload" accept="image/*" />
-
+  <input id="file-upload" type="file" name="fileUpload" accept="image/*" required/>
   <label for="file-upload" id="file-drag">
     <img id="file-image" src="#" alt="Preview" class="hidden">
     <div id="start">
@@ -38,25 +37,38 @@
       <div id="messages"></div>
     </div>
   </label>
-  <button class="btn btn-next" style="visibility:hidden" id="mybutton" type="submit">
-    <i class="fa fa-paper-plane"></i> Submit
-  </button>  
+  <div>
+    <button class="btn btn-next" style="visibility:hidden" id="mybutton" onclick="plaseWait()" type="submit">
+      <i class="fa fa-paper-plane"></i> Submit 
+    </button>
+    <br>
+  </div>
+  <div id="spinningdot" class="dot-spin" style="visibility: hidden;"></div>
 </form>
 
 <script>
 // File Upload
 // 
+
+//Utility function to reset the form if needed
+function resetForm(){
+  document.getElementById('file-image').classList.add("hidden");
+  document.getElementById('notimage').classList.remove("hidden");
+  document.getElementById('start').classList.remove("hidden");
+  document.getElementById('response').classList.add("hidden");
+  document.getElementById('mybutton').style.visibility = "hidden";
+  document.getElementById('spinningdot').style.visibility = "hidden";
+  document.getElementById("file-upload-form").reset();
+}
+
 function ekUpload(){
   function Init() {
-
-    console.log("Upload Initialised");
 
     var fileSelect    = document.getElementById('file-upload'),
         fileDrag      = document.getElementById('file-drag'),
         submitButton  = document.getElementById('submit-button');
-
+    
     fileSelect.addEventListener('change', fileSelectHandler, false);
-
     // Is XHR2 available?
     var xhr = new XMLHttpRequest();
     if (xhr.upload) {
@@ -104,8 +116,6 @@ function ekUpload(){
       '<strong>' + encodeURI(file.name) + '</strong>'
     );
     
-    // var fileType = file.type;
-    // console.log(fileType);
     var imageName = file.name;
 
     var isGood = (/\.(?=gif|jpg|png|jpeg)/gi).test(imageName);
@@ -119,12 +129,7 @@ function ekUpload(){
       document.getElementById('file-image').src = URL.createObjectURL(file);
     }
     else {
-      document.getElementById('file-image').classList.add("hidden");
-      document.getElementById('notimage').classList.remove("hidden");
-      document.getElementById('start').classList.remove("hidden");
-      document.getElementById('response').classList.add("hidden");
-      document.getElementById('mybutton').style.visibility = "hidden";
-      document.getElementById("file-upload-form").reset();
+      resetForm();
     }
   }
   function uploadFile(file) {
@@ -148,5 +153,28 @@ function ekUpload(){
   }
 }
 ekUpload();
+
+var fileSelectEle = document.getElementById('file-upload');
+fileSelectEle.onchange = function () {
+  if(fileSelectEle.value.length == 0){
+    resetForm()
+  }
+}
+
+// Output
+function plaseWait() {
+  if(document.getElementById("file-upload").value.length == 0)
+  {
+  } else {
+    // Response
+    var m = document.getElementById('messages');
+    m.innerHTML = "Uploading file, please wait";
+    document.getElementById('spinningdot').style.visibility = "visible";
+  }
+
+  
+}
+
+
 </script>
 </body>
