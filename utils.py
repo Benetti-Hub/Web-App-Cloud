@@ -19,8 +19,6 @@ def draw_boxes(image, borders, label,
         borders : the borders of the box
         label : the name of the object identified
         score : the confidence of the classification
-        h : the height of the boxes
-        fontScale : the fontscale for the text
 
     Output:
         image : the image with the box
